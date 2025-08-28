@@ -38,3 +38,21 @@ private:
 - `UFUNCTION`, `UPROPERTY`를 통해서도 해당 함수, 변수가 에디터에서 어떻게 쓰일 것인지를 설정해준다
 - 에디터에서 사용하려면 무조건 public으로 선언해야함
 - 따라서 `move()`, `a`만 에디터에서 나타나며 사용할 수 있다
+
+# 블루프린트로 만들기
+
+1. Content Drawer에서 마우스 우클릭하여 새로운 블루프린트 만들기 클릭
+2. 부모클래스를 만들었던 `MyActor`로 설정
+<img width="935" height="692" alt="image" src="https://github.com/user-attachments/assets/8755087b-5270-4c87-be1b-002c8582483d" />
+
+3. 멤버변수는 디테일 패널에서 확인 가능
+<img width="572" height="781" alt="image" src="https://github.com/user-attachments/assets/37804cb1-8ea3-45fc-809f-22c4fc442c65" />
+
+4. 멤버함수는 EventGraph에서 우클릭하여 노드 추가시 확인 가능
+<img width="1195" height="309" alt="image" src="https://github.com/user-attachments/assets/8042a6f6-61d1-40b6-9e6f-133fc539f46d" />
+
+# parent class와 블루프린트 순서
+
+- 부모클래스인 `MyActor`와 이 클래스를 상속받은 블루프린트 `BP_MyActor` 둘 다 `BeginPlay()`함수를 가짐
+- 블루프린트의 `BeginPlay()`노드에 다른 함수들 연결시키면 먼저 부모클래스 `MyActor`가 실행이 되고 나서 그 다음에 블루프린트의 `BeginPlay()`가 시작
+- 이와 같이 다른 대부분의 상황(overlap, hit..)에서도 먼저 부모가 먼저 실행이 되고 그 다음에 자식이 실행됨
