@@ -11,7 +11,7 @@ AMyActor::AMyActor()
 	start.X = 0;
 	start.Y = 0;
 	evCnt = 0;
-	totDist = 0;
+	totDist = 0.0f;
 }
 
 // Called when the game starts or when spawned
@@ -21,7 +21,7 @@ void AMyActor::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("Assignment5 Start!"));
 	UE_LOG(LogTemp, Warning, TEXT("Start Position: (%f, %f)"), start.X, start.Y);
 	move();
-	UE_LOG(LogTemp, Warning, TEXT("Total Move Distance: %d"), totDist);
+	UE_LOG(LogTemp, Warning, TEXT("Total Move Distance: %f"), totDist);
 	UE_LOG(LogTemp, Warning, TEXT("Total Event Count: %d"), evCnt);
 }
 
