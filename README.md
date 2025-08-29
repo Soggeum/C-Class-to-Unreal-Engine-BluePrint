@@ -39,7 +39,13 @@ private:
 - 에디터에서 사용하려면 무조건 public으로 선언해야함
 - 따라서 `move()`, `a`만 에디터에서 나타나며 사용할 수 있다
 
-# 블루프린트로 만들기
+# 로그 결과
+
+<img width="914" height="420" alt="image" src="https://github.com/user-attachments/assets/a734f070-ae14-4642-acb7-b6d5e33f1962" />
+
+# 추가 기능
+
+## 블루프린트로 만들기
 
 1. Content Drawer에서 마우스 우클릭하여 새로운 블루프린트 만들기 클릭
 2. 부모클래스를 만들었던 `MyActor`로 설정
@@ -51,8 +57,61 @@ private:
 4. 멤버함수는 EventGraph에서 우클릭하여 노드 추가시 확인 가능
 <img width="1195" height="309" alt="image" src="https://github.com/user-attachments/assets/8042a6f6-61d1-40b6-9e6f-133fc539f46d" />
 
-# parent class와 블루프린트 순서
+## parent class와 블루프린트 순서
 
 - 부모클래스인 `MyActor`와 이 클래스를 상속받은 블루프린트 `BP_MyActor` 둘 다 `BeginPlay()`함수를 가짐
 - 블루프린트의 `BeginPlay()`노드에 다른 함수들 연결시키면 먼저 부모클래스 `MyActor`가 실행이 되고 나서 그 다음에 블루프린트의 `BeginPlay()`가 시작
 - 이와 같이 다른 대부분의 상황(overlap, hit..)에서도 먼저 부모가 먼저 실행이 되고 그 다음에 자식이 실행됨
+
+## C++로 meshcomponent 추가해보기
+
+- 헤더파일과 cpp 파일에 각각 아래와 같은 코드를 추가해준다
+```cpp
+// MyActor.hpp
+public:
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* MeshComponent;
+
+// MyActor.cpp
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	RootComponent = MeshComponent;	// 액터의 중심 컴포넌트로 지정
+```
+
+- 아래와 같이 `MyActor`클래스를 상속받은 블루프린트에서 `MeshComponent`를 확인할 수 있다
+<img width="396" height="195" alt="image" src="https://github.com/user-attachments/assets/7b39bfb8-c4b6-4e2f-8cda-d56a213a34d1" />
+
+### Sphere Mesh 추가해보기
+
+```cpp
+static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));	// 기본 sphere mesh 경로
+if (SphereMesh.Succeeded())
+{
+	MeshComponent->SetStaticMesh(SphereMesh.Object);
+}
+```
+<img width="600" height="151" alt="image" src="https://github.com/user-attachments/assets/d31bc052-0eb4-4dc4-b3ca-063583977f78" />
+
+## 동작 완료 후 sound 출력해보기
+
+```cpp
+// MyActor.hpp
+public:
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundBase* SuccessSound;		// 음악
+
+private:
+	void PlaySuccessSound();		// 음악 재생 함수
+
+// MyActor.cpp
+void AMyActor::PlaySuccessSound()
+{
+	if (SuccessSound) 
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SuccessSound, GetActorLocation());
+	}
+}
+```
+- SuccessSound를 UPROPERTY로 선언했기 때문에 에디터에서 음악을 설정해줄 수 있다
+  <img width="562" height="473" alt="image" src="https://github.com/user-attachments/assets/30bc7e88-4d93-4807-8263-0899798cf40a" />
+
+- `move()`가 끝나고 `PlaySuccessSound()`를 호출하여 음악이 들리게 하였다.
