@@ -12,6 +12,14 @@ AMyActor::AMyActor()
 	start.Y = 0;
 	evCnt = 0;
 	totDist = 0.0f;
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	RootComponent = MeshComponent;
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	if (SphereMesh.Succeeded())
+	{
+		MeshComponent->SetStaticMesh(SphereMesh.Object);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -23,6 +31,7 @@ void AMyActor::BeginPlay()
 	move();
 	UE_LOG(LogTemp, Warning, TEXT("Total Move Distance: %f"), totDist);
 	UE_LOG(LogTemp, Warning, TEXT("Total Event Count: %d"), evCnt);
+	PlaySuccessSound();
 }
 
 // Called every frame
@@ -69,4 +78,12 @@ int32 AMyActor::createEvent()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Event Created!"));
 	return 0;
+}
+
+void AMyActor::PlaySuccessSound()
+{
+	if (SuccessSound) 
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SuccessSound, GetActorLocation());
+	}
 }
